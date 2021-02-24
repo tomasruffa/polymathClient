@@ -1,0 +1,73 @@
+@import '../../../styles/mixins';
+
+.btn {
+  width: 167px;
+  height: 48px;
+  border-radius: 30px;
+  background-color: #0D46C1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all ease-in-out .3s;
+
+  @include breakpoint('large') {
+    width: 175px;
+  }
+
+  &:hover {
+    background-color: #0c3ba0;
+  }
+
+  a {
+    font-weight: 500;
+    color: white;
+    font-size: 15px;
+    line-height: 20px;
+    text-decoration: none;
+
+    @include breakpoint('large') {
+      font-size: 16px;
+      line-height: 22px;
+    }
+  }
+
+  &--transparent {
+    background-color: transparent;
+    border: solid 1px #0D46C1;
+    transition: all ease-in-out .3s;
+
+    &:hover {
+      border: solid 1px #0c3ba0;
+
+      a {
+        color: #0c3ba0;
+      }
+    }
+
+    a {
+      color: #0D46C1;
+    }
+  }
+
+  &--white {
+    border: solid 1px white;
+
+    a {
+      color: white;
+    }
+
+    &:hover {
+      border: solid 1px white;
+      background-color: transparent;
+
+      a {
+        color: white;
+      }
+    }
+  }
+
+  &--small {
+    width: 145px;
+    height: 35px;
+  }
+}
