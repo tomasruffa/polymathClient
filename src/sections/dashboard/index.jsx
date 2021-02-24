@@ -19,6 +19,8 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SearchIcon from '@material-ui/icons/Search';
+import Fab from '@material-ui/core/Fab';
 import { logOut } from "../../redux/actions/user";
 import { makeStyles } from '@material-ui/core/styles';
 import './index.scss'
@@ -28,6 +30,9 @@ const useStyles = makeStyles(() => ({
     "& .MuiPaginationItem-root": {
       color: "#fff"
     }
+  },
+  multilinecolor: {
+    color: '#e1eaf2'
   }
 }));
 
@@ -42,9 +47,14 @@ function Dashboard(props) {
   })
   const [isEdit, setIsEdit] = useState()
   const [size, setSize] = useState(window.innerWidth)
+  const [searchDescription, setSearchDescription] = useState({
+    description: ''
+  });
+  const [isSearch, setIsSearch] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {
+    console.log('entroooo')
     searchTasks(currentPage)
   }, [currentPage])
 
@@ -134,6 +144,15 @@ function Dashboard(props) {
     })
   }
 
+  const clearResults = () => {
+    setIsSearch(false)
+    if(actuallTasks.pages == currentPage) {
+      setCurrentPage(1)
+    } else {
+      setCurrentPage(currentPage + 1)
+    }
+  }
+
   const deleteTask = async (task) => {
     console.log(currentPage)
     if (window.confirm("You will delete a task, do you want to continue?")) {
@@ -152,6 +171,26 @@ function Dashboard(props) {
           console.log(error)
           alert('Task cant be deleted')
         })
+    }
+  }
+
+  const getDescription = async (task) => {
+    if (task) {
+      let fields = {
+        description: task
+      }
+      await polymathService.getTask(fields).then(event => {
+        let newData = event.data.task;
+        setTasks({ ...actuallTasks, items: newData })
+        setIsSearch(true)
+      }
+      )
+        .catch((error) => {
+          console.log(error)
+          alert('Task cant be founded')
+        })
+    } else {
+      setCurrentPage(1)
     }
   }
 
@@ -174,6 +213,19 @@ function Dashboard(props) {
           <Button variant="contained" color="secondary" onClick={() => { openModal('create', taskAction)}}>
             Create task
           </Button>
+          <div>
+            <TextField 
+            id="standard-search" 
+            label="Search task"
+            color="secondary" 
+            InputLabelProps={{className: classes.multilinecolor}} 
+            inputProps={{className: classes.multilinecolor}}
+            onChange={event => setSearchDescription({...searchDescription, description: event.target.value})}
+            />
+            <Fab color="secondary" aria-label="add" size="small">
+              <SearchIcon onClick={() => getDescription(searchDescription.description)}/>
+            </Fab>
+          </div>
         </div>
         <div className="dashboard__box__container">
         { actuallTasks && actuallTasks.items.length > 0 ?
@@ -203,9 +255,24 @@ function Dashboard(props) {
               }
               )}
             </List>
-            <Pagination className="dashboard__box__container__pagination" classes={{ ul: classes.ul }} count={actuallTasks.pages} page={currentPage} onChange={(data, value) => { setCurrentPage(value) }} />
+              {!isSearch ? <Pagination className="dashboard__box__container__pagination" classes={{ ul: classes.ul }} count={actuallTasks.pages} page={currentPage} onChange={(data, value) => { setCurrentPage(value) }} />
+              :
+              <div className="dashboard__box__container__pagination">
+                <Button variant="contained" color="secondary" onClick={() => clearResults()}>
+                  Clear results
+                </Button>
+              </div>
+              }
             </>
-            : <h2>You dont have any task yet</h2>}
+            : !isSearch ? <h2>You dont have any task yet</h2> : 
+            <>
+            <h2>Task not founded</h2>
+            <div className="dashboard__box__container__pagination">
+                <Button variant="contained" color="secondary" onClick={() => clearResults()}>
+                  Clear results
+                </Button>
+              </div>
+            </>}
           </div>
       </div>
       <Modal

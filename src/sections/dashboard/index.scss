@@ -89,11 +89,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      button {
+        margin-right: 20px;
+      }
     }
 
     &__container {
       position: relative;
-      height: calc(100% - 46px);
+      height: calc(100% - 71px);
 
       &__list {
         height: calc(100% - 63px);
@@ -135,5 +139,9 @@
     &__icon {
       color: black;
     }
+  }
+
+  &__none {
+    display: none;
   }
 }

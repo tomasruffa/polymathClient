@@ -109,6 +109,10 @@ export const createTask = (params) => {
   return post('task/create', params);
 }
 
+export const getTask = (params) => {
+  return post('task/get', params);
+}
+
 //Exports
 export default {
   postLogin,
@@ -116,5 +120,6 @@ export default {
   postRegister,
   updateTask,
   deleteTask,
-  createTask
+  createTask,
+  getTask
 };
